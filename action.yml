@@ -1,10 +1,6 @@
 name: 'Generate content map'
 description: 'Generate a map of all content found in the site directory'
 inputs:
-  file_types: # id of input
-    description: 'list of file extensions to index default:[html md]'
-    required: false
-    default: 'html md'
   exclude_path: # id of input
     description: 'list of paths to exclude from the index'
     required: false
@@ -13,9 +9,17 @@ inputs:
     description: 'name and location for the json file for output. defaults to "./site_content_map". Set to empty to skip saving file'
     required: false
     default: 'site_content_map'
+  website_root: # id of input
+    description: 'root path to the website used when setting a path to the original file'
+    required: false
+    default: '/'
+  output_content_type: # id of input
+    description: 'type of content to return in output. Options are markdown or html.'
+    required: false
+    default: 'html'
 outputs:
   contents: # output will be available to future steps
-    description: 'The content json'
+    description: 'A json object containing the details and html for each markdown file parsed.'
 runs:
   using: 'node16'
   main: 'dist/index.js'

@@ -5,14 +5,19 @@ const {mkdirP} = require("@actions/io");
 const {dirname} = require("path");
 
 const {get_content, write_file} = require('./file_handler');
+const {formatContent} = require("./formatter");
 
-
-// most @actions toolkit packages have async methods
 async function run() {
     try {
-        const output_file = core.getInput('output_file')
-        const include = core.getInput('file_types').split(' ').map(ext => `**/*.${ext}`)
-        const exclude = core.getInput('exclude_path').split(' ').map(ext => `!**/*${ext}`)
+        const include_types = core.getInput('file_types') || 'html md'
+        const exclude_types = core.getInput('exclude_path')
+        const output_file = core.getInput('output_file') || 'site_content_map'
+        const output_content_type = core.getInput('output_content_type') || 'html'
+        const site_path = core.getInput('website_root')
+
+        const current_path = process.cwd();
+        const include = include_types.split(' ').map(ext => `**/*.${ext}`)
+        const exclude = exclude_types ? exclude_types.split(' ').map(ext => `!**/*${ext}`) : ''
         const patterns = include.concat(exclude)
         const globber = await glob.create(patterns.join('\n'))
         const files = await globber.glob()
@@ -20,13 +25,17 @@ async function run() {
         core.info(`Getting files with pattern:  ${patterns}`);
         core.info(`Matching files:  ${files}`);
         core.info(`Output path:  ${output_file}`);
+        core.info(`Current path:  ${current_path}`);
 
         let contents = await Promise.all(
             files.map(async (file) => {
+                let {content, metadata} = formatContent(await get_content(file), output_content_type)
                 return {
-                    filename: file,
+                    filename: file.replace(current_path, site_path),
                     lastmodified: await lastModified(file),
-                    content: await get_content(file)
+                    content: content,
+                    content_type: output_content_type,
+                    metadata: metadata
                 }
             }))
 
@@ -44,6 +53,12 @@ async function run() {
 }
 
 const lastModified = async (file) => {
+    return execResults('git', ['log', '-1', '--format=%cI', file]).then(result => {
+        return result ? result.trim() : new Date()
+    })
+}
+
+const execResults = async (...command) => {
     let result = '';
     let error = '';
 
@@ -56,8 +71,9 @@ const lastModified = async (file) => {
             error += data.toString();
         }
     };
-    await exec.exec('git', ['log', '-1', '--format=%cI', file], options)
-    return result ? result.trim() : new Date()
+    await exec.exec(...command, options)
+    if (error) throw Error(error)
+    return result
 }
 
 run();
