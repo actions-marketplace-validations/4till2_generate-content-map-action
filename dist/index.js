@@ -10428,21 +10428,32 @@ module.exports = {get_content, write_file};
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 const showdown = __nccwpck_require__(872)
-const CONTENT_TYPES = ['markdown', 'html']
-const SHOWDOWN_OPTIONS = {metadata: true, completeHTMLDocument: true, emoji: true, tasklists: true, moreStyling: true}
+const BASE_SHOWDOWN_OPTIONS = {metadata: true}
+const SHOWDOWN_OPTIONS = {completeHTMLDocument: true, emoji: true, tasklists: true, moreStyling: true}
 
-const convertMarkdownToHtml = (markdown) => {
-    const converter = new showdown.Converter(SHOWDOWN_OPTIONS);
+const convertMarkdownToHtml = (markdown, options = {}) => {
+    const converter = new showdown.Converter({...BASE_SHOWDOWN_OPTIONS, ...options});
     let html = converter.makeHtml(markdown);
     let metadata = converter.getMetadata()
     return {html: html, metadata: metadata}
 }
 
 const formatContent = (content, type) => {
-    if (!CONTENT_TYPES.includes(type)) throw Error('Invalid content type in formatter.js : formatContent()');
+    let {html, metadata} = convertMarkdownToHtml(content, type === 'html' ? SHOWDOWN_OPTIONS : null)
 
-    let {html, metadata} = convertMarkdownToHtml(content, type)
-    return {content: type === 'html' ? html : content, metadata: metadata}
+    return {
+        content: (() => {
+            switch (type) {
+                case 'html':
+                    return html;
+                case 'markdown':
+                    return content;
+                default:
+                    return;
+            }
+        })(),
+        metadata: metadata
+    }
 }
 module.exports = {formatContent}
 
@@ -10624,7 +10635,7 @@ async function run() {
         const include_types = core.getInput('file_types') || 'html md'
         const exclude_types = core.getInput('exclude_path')
         const output_file = core.getInput('output_file') || 'site_content_map'
-        const output_content_type = core.getInput('output_content_type') || 'html'
+        const output_content_type = core.getInput('output_content_type')
         const site_path = core.getInput('website_root')
 
         const current_path = process.cwd();

@@ -12,7 +12,7 @@ async function run() {
         const include_types = core.getInput('file_types') || 'html md'
         const exclude_types = core.getInput('exclude_path')
         const output_file = core.getInput('output_file') || 'site_content_map'
-        const output_content_type = core.getInput('output_content_type') || 'html'
+        const output_content_type = core.getInput('output_content_type')
         const site_path = core.getInput('website_root')
 
         const current_path = process.cwd();

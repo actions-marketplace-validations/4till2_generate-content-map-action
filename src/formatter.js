@@ -1,18 +1,29 @@
 const showdown = require('showdown')
-const CONTENT_TYPES = ['markdown', 'html']
-const SHOWDOWN_OPTIONS = {metadata: true, completeHTMLDocument: true, emoji: true, tasklists: true, moreStyling: true}
+const BASE_SHOWDOWN_OPTIONS = {metadata: true}
+const SHOWDOWN_OPTIONS = {completeHTMLDocument: true, emoji: true, tasklists: true, moreStyling: true}
 
-const convertMarkdownToHtml = (markdown) => {
-    const converter = new showdown.Converter(SHOWDOWN_OPTIONS);
+const convertMarkdownToHtml = (markdown, options = {}) => {
+    const converter = new showdown.Converter({...BASE_SHOWDOWN_OPTIONS, ...options});
     let html = converter.makeHtml(markdown);
     let metadata = converter.getMetadata()
     return {html: html, metadata: metadata}
 }
 
 const formatContent = (content, type) => {
-    if (!CONTENT_TYPES.includes(type)) throw Error('Invalid content type in formatter.js : formatContent()');
+    let {html, metadata} = convertMarkdownToHtml(content, type === 'html' ? SHOWDOWN_OPTIONS : null)
 
-    let {html, metadata} = convertMarkdownToHtml(content, type)
-    return {content: type === 'html' ? html : content, metadata: metadata}
+    return {
+        content: (() => {
+            switch (type) {
+                case 'html':
+                    return html;
+                case 'markdown':
+                    return content;
+                default:
+                    return;
+            }
+        })(),
+        metadata: metadata
+    }
 }
 module.exports = {formatContent}
