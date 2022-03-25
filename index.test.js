@@ -14,6 +14,7 @@ test('read file content as string', async () => {
 test('test runs', () => {
     process.env['INPUT_FILE_TYPES'] = 'md';
     process.env['INPUT_EXCLUDE_PATH'] = 'node_modules';
+    process.env['INPUT_OUTPUT_CONTENT_TYPE'] = 'html';
     process.env['INPUT_OUTPUT_FILE'] = TEMP_FILE;
     const ip = path.join(__dirname, 'src/index.js');
     const result = cp.execSync(`node ${ip}`, {env: process.env}).toString();

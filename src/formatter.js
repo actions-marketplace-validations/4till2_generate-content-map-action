@@ -4,7 +4,7 @@ const SHOWDOWN_OPTIONS = {completeHTMLDocument: true, emoji: true, tasklists: tr
 
 const convertMarkdownToHtml = (markdown, options = {}) => {
     const converter = new showdown.Converter({...BASE_SHOWDOWN_OPTIONS, ...options});
-    let html = converter.makeHtml(markdown);
+    let html = converter.makeHtml(markdown).replace(/[\n\r]/g, '');
     let metadata = converter.getMetadata()
     return {html: html, metadata: metadata}
 }
