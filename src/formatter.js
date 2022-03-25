@@ -1,6 +1,6 @@
 const showdown = require('showdown')
 const BASE_SHOWDOWN_OPTIONS = {metadata: true}
-const SHOWDOWN_OPTIONS = {completeHTMLDocument: true, emoji: true, tasklists: true, moreStyling: true}
+const SHOWDOWN_OPTIONS = {completeHTMLDocument: false, emoji: true, tasklists: true, moreStyling: true}
 
 const convertMarkdownToHtml = (markdown, options = {}) => {
     const converter = new showdown.Converter({...BASE_SHOWDOWN_OPTIONS, ...options});
