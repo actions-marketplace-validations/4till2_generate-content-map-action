@@ -1,6 +1,8 @@
 const core = require('@actions/core');
 const glob = require('@actions/glob');
 const exec = require('@actions/exec');
+const {mkdirP} = require("@actions/io");
+const {dirname} = require("path");
 
 const {get_content, write_file} = require('./file_handler');
 
@@ -27,7 +29,13 @@ async function run() {
                 }
             }))
 
-        if (output_file) write_file(`${output_file}.json`, JSON.stringify(contents))
+
+        if (output_file) {
+            const targetDir = dirname(output_file);
+            await mkdirP(targetDir);
+            await write_file(`${output_file}.json`, JSON.stringify(contents))
+        }
+
         core.setOutput('contents', contents);
     } catch (error) {
         core.setFailed(error.message);

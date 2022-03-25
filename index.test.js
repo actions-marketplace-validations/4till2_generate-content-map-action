@@ -3,6 +3,7 @@ const process = require('process');
 const cp = require('child_process');
 const path = require('path');
 
+const TEMP_FILE = 'tmp/test_content_map'
 // test('throws invalid number', async () => {
 //   await expect(wait('foo')).rejects.toThrow('milliseconds not a number');
 // });
@@ -17,7 +18,7 @@ test('read file content as string', async () => {
 test('test runs', () => {
     process.env['INPUT_FILE_TYPES'] = 'md';
     process.env['INPUT_EXCLUDE_PATH'] = 'node_modules';
-    process.env['INPUT_OUTPUT_FILE'] = 'result_file';
+    process.env['INPUT_OUTPUT_FILE'] = TEMP_FILE;
     const ip = path.join(__dirname, 'index.js');
     const result = cp.execSync(`node ${ip}`, {env: process.env}).toString();
     console.log(result);

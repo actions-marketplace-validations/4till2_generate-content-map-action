@@ -9,7 +9,11 @@ const get_content = function (path) {
 };
 
 const write_file = function (path, content) {
-    fs.writeFile(path, content, () =>  {})
-}
+    return new Promise((resolve) => {
+        fs.writeFile(path, content, (error, data) => {
+            resolve(!!data)
+        })
+    });
+};
 
 module.exports = {get_content, write_file};
