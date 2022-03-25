@@ -1,13 +1,21 @@
-name: 'Wait'
-description: 'Wait a designated number of milliseconds'
+name: 'Generate content map'
+description: 'Generate a map of all content found in the site directory'
 inputs:
-  milliseconds:  # id of input
-    description: 'number of milliseconds to wait'
-    required: true
-    default: '1000'
+  file_types: # id of input
+    description: 'list of file extensions to index default:[html md]'
+    required: false
+    default: 'html md'
+  exclude_path: # id of input
+    description: 'list of paths to exclude from the index'
+    required: false
+    default: ''
+  output_file: # id of input
+    description: 'name and location for the json file for output. defaults to "./site_content_map". Set to empty to skip saving file'
+    required: false
+    default: 'site_content_map'
 outputs:
-  time: # output will be available to future steps
-    description: 'The current time after waiting'
+  contents: # output will be available to future steps
+    description: 'The content json'
 runs:
   using: 'node16'
   main: 'dist/index.js'

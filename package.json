@@ -1,7 +1,7 @@
 {
-  "name": "javascript-action",
+  "name": "generate-content-map-action",
   "version": "1.0.0",
-  "description": "JavaScript Action Template",
+  "description": "JavaScript action for generating a site content map",
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/javascript-action.git"
+    "url": "git@github.com:4till2/generate-content-map-action.git"
   },
   "keywords": [
     "GitHub",
@@ -21,11 +21,13 @@
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/actions/javascript-action/issues"
+    "url": ""
   },
-  "homepage": "https://github.com/actions/javascript-action#readme",
+  "homepage": "",
   "dependencies": {
-    "@actions/core": "^1.2.5"
+    "@actions/core": "^1.6.0",
+    "@actions/exec": "^1.1.1",
+    "@actions/glob": "^0.2.1"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.31.1",
