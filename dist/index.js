@@ -10654,8 +10654,8 @@ async function run() {
             files.map(async (file) => {
                 let {content, metadata} = formatContent(await get_content(file), output_content_type)
                 return {
-                    filename: file.replace(current_path, site_path),
-                    lastmodified: await lastModified(file),
+                    src: file.replace(current_path, site_path),
+                    last_modified: await lastModified(file),
                     content: content,
                     content_type: output_content_type,
                     metadata: metadata
