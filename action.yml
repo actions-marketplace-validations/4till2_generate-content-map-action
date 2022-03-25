@@ -12,7 +12,7 @@ inputs:
   website_root: # id of input
     description: 'root path to the website used when setting a path to the original file'
     required: false
-    default: '/'
+    default: ''
   output_content_type: # id of input
     description: 'type of content to return in output. Options are markdown or html.'
     required: false
