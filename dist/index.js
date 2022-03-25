@@ -5442,6 +5442,7 @@ async function run() {
 
         core.info(`Getting files with pattern:  ${patterns}`);
         core.info(`Matching files:  ${files}`);
+        core.info(`Output path:  ${output_file}`);
 
         let contents = await Promise.all(
             files.map(async (file) => {
