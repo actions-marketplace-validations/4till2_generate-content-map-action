@@ -15,8 +15,12 @@ const get_content = function (path) {
 };
 
 const write_file = function (path, content) {
-    fs.writeFile(path, content, () =>  {})
-}
+    return new Promise((resolve) => {
+        fs.writeFile(path, content, (error, data) => {
+            resolve(!!data)
+        })
+    });
+};
 
 module.exports = {get_content, write_file};
 
@@ -5420,6 +5424,8 @@ var __webpack_exports__ = {};
 const core = __nccwpck_require__(186);
 const glob = __nccwpck_require__(90);
 const exec = __nccwpck_require__(514);
+const {mkdirP} = __nccwpck_require__(436);
+const {dirname} = __nccwpck_require__(622);
 
 const {get_content, write_file} = __nccwpck_require__(17);
 
@@ -5446,7 +5452,13 @@ async function run() {
                 }
             }))
 
-        if (output_file) write_file(`${output_file}.json`, JSON.stringify(contents))
+
+        if (output_file) {
+            const targetDir = dirname(output_file);
+            await mkdirP(targetDir);
+            await write_file(`${output_file}.json`, JSON.stringify(contents))
+        }
+
         core.setOutput('contents', contents);
     } catch (error) {
         core.setFailed(error.message);

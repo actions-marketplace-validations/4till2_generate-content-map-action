@@ -24,4 +24,4 @@ jobs:
       with:
         file_types: md
         exclude_path: node_modules
-        output_file: result_file
+        output_file: generated-content-map.json
