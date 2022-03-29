@@ -2,10 +2,10 @@
   "name": "generate-content-map-action",
   "version": "1.0.0",
   "description": "JavaScript action for generating a site content map",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "lint": "eslint .",
-    "prepare": "ncc build index.js -o dist --source-map --license licenses.txt",
+    "prepare": "ncc build src/index.js -o dist --source-map --license licenses.txt",
     "test": "jest",
     "all": "npm run lint && npm run prepare && npm run test"
   },
@@ -28,7 +28,9 @@
     "@actions/core": "^1.6.0",
     "@actions/exec": "^1.1.1",
     "@actions/glob": "^0.2.1",
-    "@actions/io": "^1.1.2"
+    "@actions/io": "^1.1.2",
+    "showdown": "^2.0.3",
+    "yaml": "^1.10.2"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.31.1",
