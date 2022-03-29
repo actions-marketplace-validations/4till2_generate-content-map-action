@@ -1,10 +1,3 @@
-
----
-title: readme
-author: yosef
----
-
-
 # Create a JavaScript Action
 
 <p align="center">

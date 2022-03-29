@@ -10,6 +10,8 @@ const {formatContent} = require("./formatter");
 async function run() {
     try {
         const include_types = core.getInput('file_types') || 'html md'
+        const include_meta_key = core.getInput('meta_key')
+        const include_meta_value = core.getInput('meta_value')
         const exclude_types = core.getInput('exclude_path')
         const output_file = core.getInput('output_file') || 'site_content_map'
         const output_content_type = core.getInput('output_content_type')
@@ -30,6 +32,7 @@ async function run() {
         let contents = await Promise.all(
             files.map(async (file) => {
                 let {content, metadata} = formatContent(await get_content(file), output_content_type)
+                if (!validate_page(metadata, include_meta_key, include_meta_value)) return
                 return {
                     src: file.replace(current_path, site_path),
                     last_modified: await lastModified(file),
@@ -37,13 +40,14 @@ async function run() {
                     content_type: output_content_type,
                     metadata: metadata
                 }
-            }))
+            })
+        )
 
 
         if (output_file) {
             const targetDir = dirname(output_file);
             await mkdirP(targetDir);
-            await write_file(`${output_file}.json`, JSON.stringify(contents))
+            await write_file(`${output_file}.json`, JSON.stringify(contents.filter(f => f)))
         }
 
         core.setOutput('contents', contents);
@@ -76,4 +80,11 @@ const execResults = async (...command) => {
     return result
 }
 
+const validate_page = (meta, key, value) => {
+    if (key) {
+        if (!meta) return false
+        return (key ? meta[key].toString() === value.toString() : meta[key] !== undefined)
+    }
+    return true
+}
 run();
