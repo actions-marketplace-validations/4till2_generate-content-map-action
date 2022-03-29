@@ -9,17 +9,17 @@ const {formatContent} = require("./formatter");
 
 async function run() {
     try {
-        const include_types = core.getInput('file_types') || 'html md'
+        const include_file_types = core.getInput('file_types') || 'html md'
         const include_meta_key = core.getInput('meta_key')
         const include_meta_value = core.getInput('meta_value')
-        const exclude_types = core.getInput('exclude_path')
+        const exclude_path = core.getInput('exclude_path')
         const output_file = core.getInput('output_file') || 'site_content_map'
         const output_content_type = core.getInput('output_content_type')
         const site_path = core.getInput('website_root')
 
         const current_path = process.cwd();
-        const include = include_types.split(' ').map(ext => `**/*.${ext}`)
-        const exclude = exclude_types ? exclude_types.split(' ').map(ext => `!**/*${ext}`) : ''
+        const include = include_file_types.split(' ').map(ext => `**/*.${ext}`)
+        const exclude = exclude_path ? exclude_path.split(' ').map(ext => `!**/*${ext}`) : ''
         const patterns = include.concat(exclude)
         const globber = await glob.create(patterns.join('\n'))
         const files = await globber.glob()
@@ -41,16 +41,15 @@ async function run() {
                     metadata: metadata
                 }
             })
-        )
-
+        ).then(res => res.filter(f => f)) //Remove empty slots as removed by validate_page
 
         if (output_file) {
             const targetDir = dirname(output_file);
             await mkdirP(targetDir);
-            await write_file(`${output_file}.json`, JSON.stringify(contents.filter(f => f)))
+            await write_file(`${output_file}.json`, contents ? JSON.stringify(contents) : [])
+            core.setOutput('Contents written: ', contents);
         }
 
-        core.setOutput('contents', contents);
     } catch (error) {
         core.setFailed(error.message);
     }
@@ -83,8 +82,9 @@ const execResults = async (...command) => {
 const validate_page = (meta, key, value) => {
     if (key) {
         if (!meta) return false
-        return (key ? meta[key].toString() === value.toString() : meta[key] !== undefined)
+        return (value ? meta[key].toString() === value.toString() : meta[key] !== undefined)
     }
     return true
 }
+
 run();
