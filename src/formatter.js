@@ -9,11 +9,20 @@ const convertMarkdownToHtml = (markdown, options = {}) => {
     return html
 }
 
+const yamlToJs = (yml) => {
+    try {
+        return YAML.parse(yml);
+    } catch {
+        return {};
+    }
+}
+
 const parseMetadata = (content) => {
     let md = content.match(/^(?<metadata>---\s*\n(.*?\n)+)^(---\s*$\n?)/m)
     if (!md || !md.groups.metadata) return ""
     let metadata = md.groups.metadata
-    return YAML.parse(metadata)
+
+    return yamlToJs(metadata)
 }
 
 const formatContent = (content, type) => {
