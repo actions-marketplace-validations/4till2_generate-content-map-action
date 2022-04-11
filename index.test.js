@@ -29,6 +29,13 @@ towels: ['a', 'b']
         "towels": ["a", "b"]
     })
 })
+test('missing body content', () => {
+    let md = `
+---
+name: marvin 
+---`
+    expect(formatContent(md, 'markdown', 3).content.length).toEqual(0)
+})
 
 test('trim content output', () => {
     let body = "\nthe main text."

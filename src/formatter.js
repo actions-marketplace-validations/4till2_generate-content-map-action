@@ -25,7 +25,7 @@ const parsePage = (content, trimVal) => {
     let body = md.groups.body
     return {
         metadata: yamlToJs(metadata),
-        body: body.slice(0, trimVal) // if trimVal is undefined the entire body is returned.
+        body: body ? body.slice(0, trimVal) : ''// if trimVal is undefined the entire body is returned.
     }
 }
 

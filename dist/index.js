@@ -17085,7 +17085,7 @@ const parsePage = (content, trimVal) => {
     let body = md.groups.body
     return {
         metadata: yamlToJs(metadata),
-        body: body.slice(0, trimVal) // if trimVal is undefined the entire body is returned.
+        body: body ? body.slice(0, trimVal) : ''// if trimVal is undefined the entire body is returned.
     }
 }
 
@@ -17311,7 +17311,8 @@ async function run() {
                 } = formatContent(await get_content(file), output_content_type, output_content_max_length)
                 if (!validate_page(metadata, include_meta_key, include_meta_value)) return
                 return {
-                    src: file.replace(current_path, site_path),
+                    url: file.replace(current_path, site_path),
+                    path: file.replace(current_path, ''),
                     last_modified: await lastModified(file),
                     content: content,
                     content_type: output_content_type,
