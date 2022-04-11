@@ -21,11 +21,11 @@ const yamlToJs = (yml) => {
 
 const parsePage = (content, trimVal) => {
     let md = content.match(/^(?<metadata>(---)[\S\s]+?(---))(?<body>[\S\s]*)/m) // The first instance of yaml --- ---
-    let metadata = md.groups.metadata.replace(/---/g, '')
-    let body = md.groups.body
+    let metadata = md && md.groups && md.groups.metadata ? yamlToJs(md.groups.metadata.replace(/---/g, '')) : ''
+    let body = md && md.groups && md.groups.body ? md.groups.body.slice(0, trimVal) : ''// if trimVal is undefined the entire body is returned.
     return {
-        metadata: yamlToJs(metadata),
-        body: body ? body.slice(0, trimVal) : ''// if trimVal is undefined the entire body is returned.
+        metadata: metadata,
+        body: body
     }
 }
 
